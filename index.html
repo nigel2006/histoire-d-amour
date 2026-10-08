@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Notre Histoire ❤️</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: Georgia, "Times New Roman", serif;
+  background: linear-gradient(135deg, #f8dfe5, #fff7f0, #f3d2dc);
+  color: #4b2731;
+  overflow: hidden;
+}
+
+.book-wrap {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.book {
+  width: min(900px, 96vw);
+  height: min(650px, 88vh);
+  position: relative;
+  perspective: 1800px;
+}
+
+/* =========================
+   PAGES
+========================= */
+
+.page {
+  position: absolute;
+  inset: 0;
+
+  background: #fffaf5;
+
+  border-radius: 8px 18px 18px 8px;
+
+  box-shadow: 0 15px 45px rgba(80, 30, 45, 0.22);
+
+  padding: clamp(25px, 5vw, 65px);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  overflow: auto;
+
+  transform-origin: left center;
+  backface-visibility: hidden;
+
+  transition:
+    transform 0.7s cubic-bezier(.77, 0, .18, 1),
+    opacity 0.4s;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.page.prev {
+  transform: rotateY(-180deg);
+  opacity: 0;
+}
+
+.page.next {
+  transform: rotateY(0deg);
+}
+
+/* =========================
+   COVER
+========================= */
+
+.cover {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #ffffff,
+      #fbe1e8
+    );
+}
+
+.cover .heart {
+  font-size: 70px;
+  margin-bottom: 20px;
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+/* =========================
+   TEXT
+========================= */
+
+h1 {
+  font-size: clamp(38px, 7vw, 72px);
+  font-weight: normal;
+  margin-bottom: 15px;
+}
+
+h2 {
+  font-size: clamp(27px, 4vw, 43px);
+  font-weight: normal;
+  margin-bottom: 24px;
+}
+
+p {
+  font-size: clamp(16px, 2vw, 21px);
+  line-height: 1.75;
+  margin-bottom: 15px;
+}
+
+.subtitle {
+  font-style: italic;
+  font-size: 20px;
+}
+
+.chapter {
+  position: absolute;
+  top: 22px;
+  left: 30px;
+
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+
+  opacity: 0.55;
+}
+
+.story p:first-of-type:first-letter {
+  font-size: 50px;
+  float: left;
+  line-height: 0.8;
+  padding-right: 7px;
+}
+
+/* =========================
+   MEDIA PAGES
+========================= */
+
+.media-page {
+  padding: 28px;
+}
+
+.media-box {
+  width: 100%;
+  height: 70%;
+
+  border-radius: 15px;
+
+  background: #f1d9df;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border: 2px dashed #d79aa9;
+}
+
+/*
+   VIDEO
+
+   object-fit: contain = shows the complete video
+   without stretching it.
+*/
+
+.media-box video {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+
+  background: #000;
+
+  border-radius: 12px;
+}
+
+.media-box img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+
+  border-radius: 12px;
+}
+
+/* =========================
+   PHOTO GRID
+========================= */
+
+.photo-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+
+  gap: 14px;
+
+  width: 100%;
+  height: 65%;
+}
+
+.photo-grid img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  border-radius: 14px;
+
+  box-shadow: 0 6px 18px rgba(70, 20, 35, 0.18);
+
+  transition: transform 0.3s ease;
+}
+
+.photo-grid img:hover {
+  transform: scale(1.03);
+}
+
+/* =========================
+   CONTROLS
+========================= */
+
+.controls {
+  position: fixed;
+
+  bottom: 18px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+}
+
+button {
+  border: 0;
+
+  background: #7d3048;
+  color: white;
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  font-size: 21px;
+
+  box-shadow: 0 5px 15px rgba(70, 20, 35, 0.2);
+
+  transition: transform 0.2s ease;
+}
+
+button:hover {
+  transform: scale(1.06);
+}
+
+#counter {
+  font-family: Arial, sans-serif;
+
+  font-size: 14px;
+
+  color: #63313e;
+
+  background: #fff8;
+
+  padding: 9px 14px;
+
+  border-radius: 20px;
+}
+
+/* =========================
+   DOTS
+========================= */
+
+.dots {
+  position: fixed;
+
+  top: 15px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  z-index: 100;
+
+  display: flex;
+
+  gap: 6px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #c88b99;
+
+  opacity: 0.4;
+}
+
+.dot.active {
+  opacity: 1;
+  background: #7d3048;
+}
+
+/* =========================
+   END PAGE
+========================= */
+
+.end {
+  text-align: center;
+}
+
+.end .big-heart {
+  font-size: 75px;
+  margin: 15px;
+}
+
+.signature {
+  font-style: italic;
+  font-size: 25px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .book-wrap {
+    padding: 10px;
+  }
+
+  .book {
+    height: 82vh;
+  }
+
+  .page {
+    padding: 30px 24px 70px;
+  }
+
+  p {
+    line-height: 1.55;
+  }
+
+  .media-box {
+    height: 65%;
+  }
+
+  .photo-grid {
+    height: 60%;
+    gap: 8px;
+  }
+
+  .chapter {
+    top: 15px;
+    left: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="book-wrap">
+
+  <main class="book" id="book">
+
+    <!-- =========================
+         PAGE 1 - COVER
+    ========================== -->
+
+    <section class="page cover active">
+
+      <div class="heart">❤️</div>
+
+      <h1>Notre Histoire</h1>
+
+      <p class="subtitle">
+        Une histoire qui mérite d'être racontée...
+      </p>
+
+      <p>
+        Fais glisser pour commencer →
+      </p>
+
+    </section>
+
+
+    <!-- =========================
+         PAGE 2 - STORY
+    ========================== -->
+
+    <section class="page story">
+
+      <div class="chapter">
+        Chapitre I
+      </div>
+
+      <h2>
+        La première rencontre
+      </h2>
+
+      <p>
+        Il était une fois un beau jeune homme qui rencontra une très belle jeune femme.
+        Il tomba amoureux d’elle au premier regard.
+      </p>
+
+      <p>
+        Ils commencèrent à se parler, de plus en plus, et petit à petit,
+        les deux tombèrent amoureux l’un de l’autre.
+      </p>
+
+      <p>
+        Ils s’étaient rencontrés dans un hôtel, où ils avaient joué et passé
+        du temps ensemble. Ils étaient ensuite partis dîner et s’étaient
+        amusés toute une soirée.
+      </p>
+
+    </section>
+
+
+    <!-- =========================
+         PAGE 3 - VIDEO
+    ========================== -->
+
+    <section class="page media-page">
+
+      <div class="chapter">
+        Un souvenir
+      </div>
+
+      <h2>
+        Notre premier souvenir 🎬
+      </h2>
+
+      <div class="media-box">
+
+        <video controls playsinline preload="metadata">
+
+          <source
+            src="video1.mp4"
+            type="video/mp4"
+          >
+
+          Votre navigateur ne peut pas lire cette vidéo.
+
+        </video>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         PAGE 4 - STORY
+    ========================== -->
+
+    <section class="page story">
+
+      <div class="chapter">
+        Chapitre II
+      </div>
+
+      <h2>
+        Petit à petit...
+      </h2>
+
+      <p>
+        Au fil du temps, le feeling passait de mieux en mieux entre eux.
+      </p>
+
+      <p>
+        L’homme adorait voir le sourire de la femme.
+        Et plus elle souriait, plus il tombait amoureux d’elle.
+      </p>
+
+      <p>
+        Au départ, il pensait que ce ne serait qu’une histoire d’un jour,
+        une simple journée parmi tant d’autres.
+      </p>
+
+      <p>
+        Mais il était loin de s’imaginer que cette journée deviendrait
+        l’un des meilleurs moments de sa vie, et surtout, qu’elle deviendrait
+        une personne qui resterait dans sa vie.
+      </p>
+
+    </section>
+
+
+    <!-- =========================
+         PAGE 5 - VIDEO
+    ========================== -->
+
+    <section class="page media-page">
+
+      <div class="chapter">
+        Un moment précieux
+      </div>
+
+      <h2>
+        Un souvenir en vidéo 🎬
+      </h2>
+
+      <div class="media-box">
+
+        <video controls playsinline preload="metadata">
+
+          <source
+            src="video2.mp4"
+            type="video/mp4"
+          >
+
+          Ta vidéo n'est pas disponible.
+
+        </video>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         PAGE 6 - STORY
+    ========================== -->
+
+    <section class="page story">
+
+      <div class="chapter">
+        Chapitre III
+      </div>
+
+      <h2>
+        Un nouveau chapitre
+      </h2>
+
+      <p>
+        Ensuite, ils échangèrent leur premier baiser à l’hôtel.
+        Après cela, ils continuèrent à se parler sur les réseaux sociaux.
+      </p>
+
+      <p>
+        Ils continuèrent également à se voir, et pour le jeune homme,
+        pouvoir admirer son sourire et ses yeux remplis d’amour le comblait
+        de bonheur.
+      </p>
+
+      <p>
+        Pour lui, cette femme était parfaite.
+        Elle avait des yeux incroyables et des cheveux tellement beaux
+        qu’on aurait dit des cheveux d’ange.
+      </p>
+
+    </section>
+
+
+    <!-- =========================
+         PAGE 7 - 4 PHOTOS
+    ========================== -->
+
+    <section class="page media-page gallery-page">
+
+      <div class="chapter">
+        Nos souvenirs
+      </div>
+
+      <h2>
+        Des moments à garder pour toujours ❤️
+      </h2>
+
+      <div class="photo-grid">
+
+        <img
+          src="photo1.jpeg"
+          alt="Souvenir 1"
+        >
+
+        <img
+          src="photo2.jpeg"
+          alt="Souvenir 2"
+        >
+
+        <img
+          src="photo3.jpeg"
+          alt="Souvenir 3"
+        >
+
+        <img
+          src="photo4.jpeg"
+          alt="Souvenir 4"
+        >
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         PAGE 8 - STORY
+    ========================== -->
+
+    <section class="page story">
+
+      <div class="chapter">
+        Chapitre IV
+      </div>
+
+      <h2>
+        Une personne exceptionnelle
+      </h2>
+
+      <p>
+        Son sourire aurait pu redonner la vue à un aveugle,
+        et toute sa personnalité faisait d’elle une personne exceptionnelle.
+      </p>
+
+      <p>
+        Il est tellement heureux de l’avoir rencontrée,
+        de la connaître et de l’aimer un peu plus chaque jour.
+      </p>
+
+      <p>
+        Il est heureux de pouvoir passer des moments inoubliables avec elle
+        et de profiter de cette magnifique aventure à deux.
+      </p>
+
+    </section>
+
+
+    <!-- =========================
+         PAGE 9 - END
+    ========================== -->
+
+    <section class="page end">
+
+      <div class="big-heart">
+        ❤️
+      </div>
+
+      <h2>
+        Bon anniversaire, mon amour.
+      </h2>
+
+      <p>
+        Que cette histoire continue encore et encore,
+        et que chaque nouveau chapitre soit plus beau que le précédent.
+      </p>
+
+      <p class="signature">
+        Je t’aime. ❤️
+      </p>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<!-- =========================
+     PAGE INDICATORS
+========================== -->
+
+<div class="dots" id="dots"></div>
+
+
+<!-- =========================
+     NAVIGATION
+========================== -->
+
+<div class="controls">
+
+  <button
+    id="prev"
+    aria-label="Page précédente">
+    ‹
+  </button>
+
+  <span id="counter">
+    1 / 9
+  </span>
+
+  <button
+    id="next"
+    aria-label="Page suivante">
+    ›
+  </button>
+
+</div>
+
+
+<script>
+
+const pages = [
+  ...document.querySelectorAll(".page")
+];
+
+const dots = document.getElementById("dots");
+
+const counter =
+  document.getElementById("counter");
+
+let current = 0;
+
+
+/* =========================
+   CREATE DOTS
+========================= */
+
+pages.forEach((_, i) => {
+
+  const d = document.createElement("span");
+
+  d.className =
+    "dot" + (i === 0 ? " active" : "");
+
+  dots.appendChild(d);
+
+});
+
+
+/* =========================
+   SHOW PAGE
+========================= */
+
+function showPage(index, direction = 1) {
+
+  if (
+    index < 0 ||
+    index >= pages.length ||
+    index === current
+  ) {
+    return;
+  }
+
+  const old = pages[current];
+
+  const next = pages[index];
+
+
+  old.classList.remove("active");
+
+  old.classList.add(
+    direction > 0
+      ? "prev"
+      : "next"
+  );
+
+
+  next.classList.remove(
+    "prev",
+    "next"
+  );
+
+  next.classList.add("active");
+
+
+  current = index;
+
+
+  /* Update dots */
+
+  [
+    ...dots.children
+  ].forEach((dot, i) => {
+
+    dot.classList.toggle(
+      "active",
+      i === current
+    );
+
+  });
+
+
+  /* Update counter */
+
+  counter.textContent =
+    `${current + 1} / ${pages.length}`;
+
+
+  /* Stop videos on pages that are no longer active */
+
+  document
+    .querySelectorAll("video")
+    .forEach(video => {
+
+      if (!next.contains(video)) {
+        video.pause();
+      }
+
+    });
+
+
+  /* Clean old page classes */
+
+  setTimeout(() => {
+
+    pages.forEach((page, i) => {
+
+      if (i !== current) {
+
+        page.classList.remove(
+          "prev",
+          "next"
+        );
+
+      }
+
+    });
+
+  }, 750);
+
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+document.getElementById("next").onclick =
+  () => showPage(current + 1, 1);
+
+document.getElementById("prev").onclick =
+  () => showPage(current - 1, -1);
+
+
+/* =========================
+   SWIPE
+========================= */
+
+let startX = 0;
+let startY = 0;
+
+
+document.addEventListener(
+  "touchstart",
+  e => {
+
+    startX =
+      e.changedTouches[0].screenX;
+
+    startY =
+      e.changedTouches[0].screenY;
+
+  },
+  { passive: true }
+);
+
+
+document.addEventListener(
+  "touchend",
+  e => {
+
+    const dx =
+      e.changedTouches[0].screenX -
+      startX;
+
+    const dy =
+      e.changedTouches[0].screenY -
+      startY;
+
+
+    if (
+      Math.abs(dx) > 60 &&
+      Math.abs(dx) > Math.abs(dy)
+    ) {
+
+      if (dx < 0) {
+
+        showPage(current + 1, 1);
+
+      } else {
+
+        showPage(current - 1, -1);
+
+      }
+
+    }
+
+  },
+  { passive: true }
+);
+
+
+/* =========================
+   KEYBOARD
+========================= */
+
+document.addEventListener(
+  "keydown",
+  e => {
+
+    if (e.key === "ArrowRight") {
+
+      showPage(current + 1, 1);
+
+    }
+
+    if (e.key === "ArrowLeft") {
+
+      showPage(current - 1, -1);
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
+```
